@@ -1,7 +1,7 @@
 # google_sheet_wp_posting
 A Python util that create WordPress posts with Google Sheet data (TBC)
 
-#Google Cloud Prerequisite
+##Google Cloud Prerequisite
 1. Create a Google account.
 
 2. Create a Google Cloud project and enable Google Sheets API in the Google Cloud Console ( see [https://developers.google.com/workspace/guides/create-project](https://developers.google.com/workspace/guides/create-project)).
