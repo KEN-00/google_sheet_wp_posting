@@ -1,0 +1,8 @@
+{
+    "spreadSheetID":"",
+    "queryRange":"A:ZZZ",
+    "scopes":[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+}    
