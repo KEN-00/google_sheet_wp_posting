@@ -1,0 +1,8 @@
+{
+    "userName": "admin",
+    "password": "",
+    "postEndPointURL": "http://localhost/wordpress/wp-json/wp/v2/posts",
+    "authorID":1,
+    "categories":[1],
+    "postStatus":"publish"
+}
