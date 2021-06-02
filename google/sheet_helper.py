@@ -1,9 +1,25 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import json
+from . import data_getter
 
-def get_formatted_sheet_data(serviceAccountInfo, spreadSheetID, queryRange, scopes):
-    sheetData = []
+
+def get_transformed_sheet_data(sheetData, dataTransformationMapping):
+    if not dataTransformationMapping:
+        return sheetData
+
+    transformedSheetData = {}
+
+    for columnName,cellValue in sheetData.items():
+        dataKey = data_getter.get_value_from_dict(dataTransformationMapping, columnName, None)
+        if dataKey:
+            transformedSheetData[dataKey] = cellValue
+
+
+    return transformedSheetData
+
+def get_formatted_sheet_data_list(serviceAccountInfo, spreadSheetID, queryRange, scopes):
+    sheetDataList = []
     values = get_sheet_values(serviceAccountInfo, spreadSheetID, queryRange, scopes)
 
     if values:
@@ -13,28 +29,16 @@ def get_formatted_sheet_data(serviceAccountInfo, spreadSheetID, queryRange, scop
         rows = values
         
         for row in rows:
-            datum = {}
+            data = {}
             for i in range(headerLength):
                 column = header[i]
-                value = get_list_item(row, i)
+                value = data_getter.get_list_item(row, i, '')
 
-                datum[column] = value
+                data[column] = value
             
-            sheetData.append(datum)
+            sheetDataList.append(data)
 
-    return sheetData
-
-
-def get_list_item(list, index):
-    item = None
-
-    try:
-        item = list[index]
-    except IndexError:
-        print('returning empty string as index {} is out of bound of list {}'.format(index, list))
-        item = ''
-
-    return item
+    return sheetDataList
 
 
 def get_sheet_values(serviceAccountInfo, spreadSheetID, queryRange, scopes):
@@ -72,5 +76,6 @@ def build_discovery_service(serviceAccountInfo, scopes):
 
 
 if __name__ == '__main__':
-    fruits=['apple']
-    print(get_list_item(fruits, 1))
+    arr = ['1','2','3']
+    print(valuegetter.get_list_item(arr,4))
+    pass

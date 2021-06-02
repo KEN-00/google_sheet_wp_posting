@@ -3,7 +3,7 @@
 import os
 import requests
 import json
-from . import content
+from . import content_creater
 
 
 DEFAULT_HEADERS = {'content-type': "Application/json"}
@@ -15,11 +15,11 @@ authorID,
 categories, 
 postEndPointURL, 
 postStatus, 
-postData):
+postData,
+title):
 
     auth = (apiUserName, apiPassword)
-    title = postData['Title']
-    postContent = content.create_post_content(postData)
+    postContent = content_creater.create_post_content(postData)
     
 
     payload = {

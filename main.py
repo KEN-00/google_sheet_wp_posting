@@ -1,8 +1,8 @@
 from __future__ import print_function
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from google import sheethelper
-from wp import postcreater
+from google import sheet_helper
+from wp import post_creater
 import io
 import json
 
@@ -29,13 +29,14 @@ def get_json_data(filename):
         return data          
 
 
-if __name__ == '__main__':
+def main():
     serviceAccountInfo = get_service_account_info()
     googleSheetConfig = get_google_sheet_config()
 
     spreadSheetID = None
     queryRange = None
     scopes = None
+    dataTransformationMapping = None
 
     ## get google sheet information and API params from configuration
     try:
@@ -46,10 +47,14 @@ if __name__ == '__main__':
         print ('google sheet config {} is missing, please set {} in {}'.format(k, k, SHEET_CONFIG_FILE_NAME))
         exit()
 
+    try:
+        dataTransformationMapping = googleSheetConfig['dataTransformationMapping']
+    except KeyError as k:
+        print ('dataTransformationMapping is missing in {}, default will be used'.format(SHEET_CONFIG_FILE_NAME))    
 
-    data = sheethelper.get_formatted_sheet_data(serviceAccountInfo, spreadSheetID, queryRange, scopes)
+    formattedSheetDataList = sheet_helper.get_formatted_sheet_data_list(serviceAccountInfo, spreadSheetID, queryRange, scopes)
     
-    if data:
+    if formattedSheetDataList:
         wpApiConfig = get_wp_api_config()
         wpApiUserName = None
         wpApiPassword = None
@@ -70,16 +75,23 @@ if __name__ == '__main__':
             print ('WordPress API config {} is missing, please set {} in {}'.format(k, k, WP_API_CONFIG_FILE_NAME))
             exit()
 
-        for datum in data:
-            postcreater.create_post(
+        for data in formattedSheetDataList:
+            transformedData = sheet_helper.get_transformed_sheet_data(data, dataTransformationMapping)
+            title = transformedData['title']
+            
+            post_creater.create_post(
                 apiUserName=wpApiUserName,
                 apiPassword=wpApiPassword,
                 authorID=authorID,
                 categories=categories,
                 postEndPointURL=wpPostEndPointURL,
                 postStatus=postStatus,
-                postData=datum                
+                postData=data,
+                title=title                
             )
+
+if __name__ == '__main__':
+    main()
 
 
 
