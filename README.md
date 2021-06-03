@@ -6,9 +6,11 @@ A Python util that create WordPress posts with Google Sheet data (TBC)
 ## Google Cloud Prerequisite
 1. Create a Google account.
 
-2. Create a Google Cloud project and enable Google Sheets API in the Google Cloud Console (see [https://developers.google.com/workspace/guides/create-project](https://developers.google.com/workspace/guides/create-project)).
+2. Create a Google Cloud project and enable Google Sheets API in the Google Cloud Console 
+(see [https://developers.google.com/workspace/guides/create-project](https://developers.google.com/workspace/guides/create-project)).
 
-3. Create a service account and a JSON key, download the service account's JSON key file to the project directory  and rename the file to "service_account_info.json" (see [https://developers.google.com/identity/protocols/oauth2/service-account](https://developers.google.com/identity/protocols/oauth2/service-account)).
+3. Create a service account and a JSON key, download the service account's JSON key file to the project directory  and rename the file to "service_account_info.json" 
+(see [https://developers.google.com/identity/protocols/oauth2/service-account](https://developers.google.com/identity/protocols/oauth2/service-account)).
 
 ## Setup
 To install dependencies:
@@ -24,10 +26,11 @@ A set of environment variables define the file paths of the configuration files 
 | JINJA2_POST_TEMPLATE_FILE_PATH |  resource/post_template.jinja2 |  
 
 ### Google Sheet Config
-Configure the spreadsheet ID and query range in `google_sheet_config.json` 
+Configure the spreadsheet ID and query range in `google_sheet_config.json`. 
 Please see [https://developers.google.com/sheets/api/guides/concepts](https://developers.google.com/sheets/api/guides/concepts) for details.
 
-Set the `dataTransformationMapping ` to define how to map Google Sheet column to JSON. The key of the mapping is the name of column displayed in the first row of the Google spreadsheet, while the value of the mapping is the name JSON key that the data will be mapped to. The transformed JSON data will be used to create WordPress post.
+Set the `dataTransformationMapping ` to define how to map Google Sheet column to JSON. The key of the mapping is the name of column displayed in the first row of the Google spreadsheet, while the value of the mapping is the name JSON key that the data will be mapped to. 
+The transformed JSON data will be used to create WordPress post.
 
 For example:
 
