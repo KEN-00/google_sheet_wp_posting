@@ -1,0 +1,26 @@
+{% macro render_generic_row(itemName, itemValue) -%}
+<div class="row-container">
+    <tr>
+        <td>{{ itemName }}</td>
+        <td>:</td>
+        <td>{{ itemValue }}</td>
+    </tr>
+</div>
+{%- endmacro %}
+
+<div class="table-container">
+    <table class="table">
+        {% if title %}
+            {{ render_generic_row('Title', title) }}
+        {% endif %}
+        {% if jobDescription %}
+            {{ render_generic_row('Job Description', jobDescription) }}
+        {% endif %}
+        {% if programmingLanguage %}
+            {{ render_generic_row('Programming Language', programmingLanguage) }}
+        {% endif %}
+        {% if expectedSalary %}
+            {{ render_generic_row('Expected Salary', expectedSalary) }}
+        {% endif %}
+    </table>
+</div>

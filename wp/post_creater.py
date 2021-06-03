@@ -3,23 +3,24 @@
 import os
 import requests
 import json
-from . import content_creater
+from . import post_content_creater
 
 
 DEFAULT_HEADERS = {'content-type': "Application/json"}
-
+POST_TITLE_KEY = 'title'
 
 def create_post(apiUserName, 
 apiPassword, 
 authorID, 
 categories, 
+jinja2PostTemplate,
 postEndPointURL, 
 postStatus, 
 postData,
 title):
 
     auth = (apiUserName, apiPassword)
-    postContent = content_creater.create_post_content(postData)
+    postContent = post_content_creater.create_post_content(postData, jinja2PostTemplate)
     
 
     payload = {
@@ -39,3 +40,10 @@ title):
     except requests.exceptions.ConnectionError as err:
         print("Connection failure!!!!!!!!!!!!!!!!!!!!!!!")
 
+def get_title(postData):
+    title = None
+    try:
+        title = postData[POST_TITLE_KEY]
+    except KeyError:
+        title = ''
+    return title
