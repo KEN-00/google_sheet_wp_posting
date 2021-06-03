@@ -5,23 +5,31 @@ from google import sheet_helper
 from wp import post_creater
 import io
 import json
-
-SHEET_CONFIG_FILE_NAME = 'google_sheet_config.json'
-SERVICE_ACCOUNT_INFO_FILE_NAME = 'service_account_info.json'
-WP_API_CONFIG_FILE_NAME = 'wp_api_config.json'
+import os
 
 
-def get_service_account_info():
-    return get_json_data(SERVICE_ACCOUNT_INFO_FILE_NAME)
+GOOGLE_SHEET_CONFIG_FILE_PATH_VAR_KEY = 'GOOGLE_SHEET_CONFIG_FILE_PATH'
+SERVICE_ACCOUNT_INFO_FILE_PATH_VAR_KEY = 'SERVICE_ACCOUNT_INFO_FILE_PATH'
+WP_API_CONFIG_FILE_PATH_VAR_KEY = 'WP_API_CONFIG_FILE_PATH'
+
+DEFAULT_GOOGLE_SHEET_CONFIG_FILE_PATH = 'resource/google_sheet_config.json'
+DEFAULT_SERVICE_ACCOUNT_INFO_FILE_PATH = 'resource/service_account_info.json'
+DEFAULT_WP_API_CONFIG_FILE_PATH = 'resource/wp_api_config.json'
 
 
 def get_google_sheet_config():
-    return get_json_data(SHEET_CONFIG_FILE_NAME)
+    filePath = get_env_config(GOOGLE_SHEET_CONFIG_FILE_PATH_VAR_KEY, DEFAULT_GOOGLE_SHEET_CONFIG_FILE_PATH)
+    return get_json_data(filePath)
 
 
 def get_wp_api_config():
-    return get_json_data(WP_API_CONFIG_FILE_NAME)
+    filePath = get_env_config(WP_API_CONFIG_FILE_PATH_VAR_KEY, DEFAULT_WP_API_CONFIG_FILE_PATH)
+    return get_json_data(filePath)
 
+
+def get_service_account_info():
+    filePath = get_env_config(SERVICE_ACCOUNT_INFO_FILE_PATH_VAR_KEY, DEFAULT_SERVICE_ACCOUNT_INFO_FILE_PATH)
+    return get_json_data(filePath)
 
 def get_json_data(filename): 
     with io.open(filename, "r", encoding="utf-8") as json_file:
@@ -29,9 +37,15 @@ def get_json_data(filename):
         return data          
 
 
+def get_env_config(key, default):
+    return default if not os.environ.get(key) else os.environ.get(key)
+
+
 def main():
     serviceAccountInfo = get_service_account_info()
     googleSheetConfig = get_google_sheet_config()
+
+    print(googleSheetConfig)
 
     spreadSheetID = None
     queryRange = None
@@ -44,13 +58,13 @@ def main():
         queryRange = googleSheetConfig['queryRange']
         scopes = googleSheetConfig['scopes']
     except KeyError as k:
-        print ('google sheet config {} is missing, please set {} in {}'.format(k, k, SHEET_CONFIG_FILE_NAME))
+        print ('google sheet config {} is missing, please set {} in {}'.format(k, k, DEFAULT_GOOGLE_SHEET_CONFIG_FILE_PATH))
         exit()
 
     try:
         dataTransformationMapping = googleSheetConfig['dataTransformationMapping']
     except KeyError as k:
-        print ('dataTransformationMapping is missing in {}, default will be used'.format(SHEET_CONFIG_FILE_NAME))    
+        print ('dataTransformationMapping is missing in {}, default will be used'.format(DEFAULT_GOOGLE_SHEET_CONFIG_FILE_PATH))    
 
     formattedSheetDataList = sheet_helper.get_formatted_sheet_data_list(serviceAccountInfo, spreadSheetID, queryRange, scopes)
     
@@ -72,7 +86,7 @@ def main():
             postStatus = wpApiConfig['postStatus']
 
         except KeyError as k:
-            print ('WordPress API config {} is missing, please set {} in {}'.format(k, k, WP_API_CONFIG_FILE_NAME))
+            print ('WordPress API config {} is missing, please set {} in {}'.format(k, k, DEFAULT_WP_API_CONFIG_FILE_PATH))
             exit()
 
         for data in formattedSheetDataList:

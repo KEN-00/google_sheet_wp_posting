@@ -32,6 +32,10 @@ title):
 
     payloadData = json.dumps(payload)
 
-    response = requests.post(postEndPointURL, data=payloadData , headers=DEFAULT_HEADERS, auth=auth)
-    if response.ok is not True or response.status_code != 200:
-        print("create post request failed, response: {}".format(json.loads(response.content)))
+    try:
+        response = requests.post(postEndPointURL, data=payloadData , headers=DEFAULT_HEADERS, auth=auth)
+        if response.ok is not True or response.status_code != 200:
+            print("create post request failed, response: {}".format(json.loads(response.content)))
+    except requests.exceptions.ConnectionError as err:
+        print("Connection failure!!!!!!!!!!!!!!!!!!!!!!!")
+
